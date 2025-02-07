@@ -2,130 +2,144 @@
 <html lang="de">
 <head>
     <link rel="stylesheet" href="style.css">
-  <meta charset="UTF-8">
-  <title>Password Generator</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    pre { background: #f4f4f4; padding: 10px; }
-    .hidden { display: none; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Passwort-Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background-color: #1E1E1E;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        h1 {
+            color: #00BFFF;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background-color: #2C2C2C;
+            color: #E0E0E0;
+        }
+
+        button {
+            background-color: #00BFFF;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #009ACD;
+        }
+
+        #passwordOutput {
+            background-color: #2C2C2C;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            color: #00BFFF;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <!-- Logo-Ausgabe -->
-  <pre id="logo">
-   _ __   __ _ ___ _____      _____  _ __ __| |     __ _  ___ _ __   ___ _ __ __ _| |_ ___  _ __
-  | '_ \ / _` / __/ __\ \ /\ / / _ \| '__/ _` |    / _` |/ _ \ '_ \ / _ \ '__/ _` | __/ _ \| '__|
-  | |_) | (_| \__ \__ \\ V  V / (_) | | | (_| |   | (_| |  __/ | | |  __/ | | (_| | || (_) | |
-  | .__/ \__,_|___/___/ \_/\_/ \___/|_|  \__,_|____\__, |\___|_| |_|\___|_|  \__,_|\__\___/|_|
-  |_|                                        |_____|___/
-  </pre>
+    <div class="container">
+        <h1>Passwort-Generator</h1>
+        <label for="mode">Wähle den Modus:</label>
+        <select id="mode">
+            <option value="g">Gruppiert</option>
+            <option value="s">String</option>
+        </select>
 
-  <!-- Moduswahl -->
-  <div>
-    <label for="mode">Wähle den Modus:</label>
-    <select id="mode">
-      <option value="g">Gruppiert</option>
-      <option value="s">String</option>
-    </select>
-  </div>
+        <div id="groupSettings">
+            <label for="groupCount">Anzahl der Gruppen:</label>
+            <input type="number" id="groupCount" value="3" min="1">
+        </div>
 
-  <!-- Eingabefelder für gruppierten Modus -->
-  <div id="groupSettings">
-    <label for="groupCount">Anzahl der Gruppen:</label>
-    <input type="number" id="groupCount" value="3" min="1">
-  </div>
+        <div id="stringSettings" class="hidden">
+            <label for="length">Länge des Passworts:</label>
+            <input type="number" id="length" value="12" min="1">
+        </div>
 
-  <!-- Eingabefelder für string Modus -->
-  <div id="stringSettings" class="hidden">
-    <label for="length">Länge des Passworts:</label>
-    <input type="number" id="length" value="12" min="1">
-  </div>
+        <button id="generateBtn">Passwort generieren</button>
 
-  <!-- Button zur Passwortgenerierung -->
-  <button id="generateBtn">Passwort generieren</button>
+        <div>
+            <br><p>Dein Passwort:</p>
+            <pre id="passwordOutput"></pre>
+        </div>
+    </div>
 
-  <!-- Ausgabe des Passworts -->
-  <div>
-    <p>Dein Passwort:</p>
-    <pre id="passwordOutput"></pre>
-  </div>
-
-  <!-- JavaScript-Code einbinden -->
-  <script>
-    // Funktion zur zufälligen Zeichenauswahl
-    function getRandomChar(characters) {
-      const index = Math.floor(Math.random() * characters.length);
-      return characters[index];
-    }
-
-    // Passwortgenerator-Funktion
-    function generatePassword({ length = 12, grouped = false, groupSize = 6, groupCount = 3 } = {}) {
-      if (grouped) {
-        const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let groups = [];
-        for (let i = 0; i < groupCount; i++) {
-          let group = "";
-          for (let j = 0; j < groupSize; j++) {
-            group += getRandomChar(letters);
-          }
-          groups.push(group);
+    <script>
+        function getRandomChar(characters) {
+            return characters[Math.floor(Math.random() * characters.length)];
         }
-        return groups.join("-");
-      } else {
-        const normalSpecials = "$%&";
-        const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + normalSpecials;
-        let password = "";
-        for (let i = 0; i < length; i++) {
-          password += getRandomChar(characters);
+
+        function generatePassword({ length = 12, grouped = false, groupSize = 6, groupCount = 3 } = {}) {
+            const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$%&";
+            if (grouped) {
+                return Array.from({ length: groupCount }, () =>
+                    Array.from({ length: groupSize }, () => getRandomChar(characters)).join('')
+                ).join('-');
+            } else {
+                return Array.from({ length }, () => getRandomChar(characters)).join('');
+            }
         }
-        return password;
-      }
-    }
 
-    // UI-Elemente abrufen
-    const modeSelect = document.getElementById('mode');
-    const groupSettings = document.getElementById('groupSettings');
-    const stringSettings = document.getElementById('stringSettings');
-    const generateBtn = document.getElementById('generateBtn');
-    const passwordOutput = document.getElementById('passwordOutput');
+        document.getElementById('mode').addEventListener('change', function() {
+            document.getElementById('groupSettings').classList.toggle('hidden', this.value !== 'g');
+            document.getElementById('stringSettings').classList.toggle('hidden', this.value !== 's');
+        });
 
-    // Wechsel der Einstellungen je nach Modus
-    modeSelect.addEventListener('change', () => {
-      if (modeSelect.value === 'g') {
-        groupSettings.classList.remove('hidden');
-        stringSettings.classList.add('hidden');
-      } else {
-        groupSettings.classList.add('hidden');
-        stringSettings.classList.remove('hidden');
-      }
-    });
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const mode = document.getElementById('mode').value;
+            const password = mode === 'g'
+                ? generatePassword({ grouped: true, groupSize: 6, groupCount: parseInt(document.getElementById('groupCount').value, 10) || 3 })
+                : generatePassword({ length: parseInt(document.getElementById('length').value, 10) || 12 });
 
-    // Event-Listener für den Generierungsknopf
-    generateBtn.addEventListener('click', () => {
-      let password;
-      if (modeSelect.value === 'g') {
-        const groupCount = parseInt(document.getElementById('groupCount').value, 10) || 3;
-        password = generatePassword({ grouped: true, groupSize: 6, groupCount: groupCount });
-      } else {
-        const length = parseInt(document.getElementById('length').value, 10) || 12;
-        password = generatePassword({ length: length, grouped: false });
-      }
-      passwordOutput.textContent = password;
+            document.getElementById('passwordOutput').textContent = password;
 
-      // Passwort in die Zwischenablage kopieren
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(password)
-          .then(() => {
-            alert("Das Passwort wurde in die Zwischenablage kopiert.");
-          })
-          .catch((err) => {
-            console.error("Fehler beim Kopieren: ", err);
-          });
-      } else {
-        // Fallback, falls Clipboard API nicht verfügbar ist
-        alert("Zwischenablage-Zugriff wird von diesem Browser nicht unterstützt.");
-      }
-    });
-  </script>
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(password)
+                    .then(() => alert("Das Passwort wurde in die Zwischenablage kopiert."))
+                    .catch(err => console.error("Fehler beim Kopieren: ", err));
+            } else {
+                alert("Zwischenablage-Zugriff wird von diesem Browser nicht unterstützt.");
+            }
+        });
+    </script>
 </body>
 </html>
